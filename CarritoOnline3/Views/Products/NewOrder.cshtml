@@ -1,0 +1,58 @@
+﻿@model IEnumerable<CarritoOnline3.Models.Entities.Product>
+@inject IHttpContextAccessor context;
+
+@{
+    ViewData["Title"] = "NewOrder";
+    List<int> cart = Context.Session.GetObject<List<int>>("Cart");
+}
+
+<h1>Add to cart</h1>
+
+    <table class="table table-striped">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <!--<th>
+                Quantity
+            </th>-->
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model)
+{
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                    @if (cart != null && cart.Contains(item.ProductID))
+                    {
+                        <button disabled class="btn btn-outline-danger disabled">Already in cart</button>
+                    }
+                    else
+                    {
+                        <a id="addToCart_@item.ProductID" class="btn btn-success addToCartButton" asp-controller="Products" asp-action="NewOrder" asp-route-productId="@item.ProductID">
+                            Add
+                        </a>
+                    }
+                
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+

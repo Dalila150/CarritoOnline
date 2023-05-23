@@ -1,0 +1,144 @@
+﻿@model IEnumerable<CarritoOnline3.Models.CartProductViewModel>
+@{
+    ViewData["Title"] = "Cart";
+    decimal totalPrice = 0;
+    decimal priceByQ = 0;
+    int quantity = 1;
+}
+
+
+<h1>Cart</h1>
+<!--<a class="btn btn-primary" type="button" asp-action="Index" asp-controller="Orders">
+    My purchases
+</a>--><br />
+
+@if (Model != null && Model.Any())
+{
+    
+        <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Product.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Product.Price)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Quantity)
+                </th>
+                <th>
+                    PxQ
+                </th>
+                
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                    //var item = Model.ElementAt(i);
+                    <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Product.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Product.Price) $
+                            @{
+                                totalPrice += item.Product.Price;
+                            }
+                    </td>
+                    <td class="quantity-column">
+                        <input type="number" id="quantity-@item.Product.ProductID}" min="1" value="1" pattern="[0-9]+" title="Please enter a valid integer number" onkeydown="return restrictCharacters(event)" readonly>
+                    </td>
+                    <td>
+                        @priceByQ $
+                            
+                    </td>
+                    <td>
+                        <button class="btn btn-success" onclick="location.reload();"><b>+</b></button>
+                        <button class="btn btn-danger" onclick="location.reload();"><b>-</b></button>
+
+                    </td>
+                    <td>
+                        <a class="btn btn-outline-danger" asp-action="Cart" asp-controller="Products" asp-route-productId="@item.Product.ProductID">
+                            Delete
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+        </table>
+
+        <a class="btn btn-primary" type="button" asp-action="NewOrder" asp-controller="Products">
+            Back
+        </a>
+        <a class="btn btn-success" asp-action="Order" asp-controller="Products">
+            Finish Order
+            </a>
+
+        <label>Total Price: </label>
+        <label id="TotalPrice" class="total-price-label">@totalPrice $</label>
+    
+    
+    
+}
+else
+{
+    <br />
+    <div class="alert alert-primary d-flex align-items-center" role="alert">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:">
+        <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+      </svg>
+      <div>
+        You've not added products to the cart yet
+      </div>
+    </div><br />
+
+    <a class="btn btn-primary" type="button" asp-action="NewOrder" asp-controller="Products">
+    Back
+</a>
+
+}
+<script>
+
+    function restrictCharacters(event) {
+  // Obtener el código de la tecla presionada
+  var keyCode = event.which ? event.which : event.keyCode;
+
+  // Permitir solo números y las teclas especiales como Backspace, Delete y las flechas direccionales
+  if (keyCode < 48 || keyCode > 57) {
+    event.preventDefault();
+  }
+}
+
+</script>
+
+<script>
+    // Función para calcular la suma del precio de los productos
+    function calculateTotalPrice() {
+        var totalPrice = 0;
+
+        // Obtener todos los inputs de cantidad en la tabla
+        var quantityInputs = document.querySelectorAll('.quantity-column input[type="number"]');
+
+        // Recorrer los inputs y calcular la suma del precio
+        quantityInputs.forEach(function (input) {
+            var quantity = parseInt(input.value);
+            var price = parseFloat(input.closest('tr').querySelector('.product-price').textContent);
+            totalPrice += quantity * price;
+        });
+
+        // Actualizar el contenido del label "TotalPrice"
+        var totalPriceLabel = document.getElementById('TotalPrice');
+        totalPriceLabel.textContent = totalPrice.toFixed(2); // Ajusta la cantidad de decimales según tus necesidades
+    }
+
+    // Ejecutar la función al cargar la página
+    calculateTotalPrice();
+
+    // Escuchar el evento 'input' en los inputs de cantidad para actualizar el precio total en tiempo real
+    var quantityInputs = document.querySelectorAll('.quantity-column input[type="number"]');
+    quantityInputs.forEach(function (input) {
+        input.addEventListener('input', calculateTotalPrice);
+    });
+</script>

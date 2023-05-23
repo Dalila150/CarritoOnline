@@ -1,0 +1,44 @@
+﻿@model CarritoOnline3.Models.OrderViewModel
+
+
+@{
+    ViewData["Title"] = "My Purchases";
+}
+
+<h1>My Purchases</h1>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.orders.First().OrderID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.orders.First().TotalPrice)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.orders.First().OrderDetail)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.orders) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.OrderID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TotalPrice)
+            </td>
+            <td>
+                    <!--<a class="btn btn-primary" type="button" asp-controller="Orders" asp-action="Details">Products</a>-->
+                <a class="btn btn-primary" type="button" asp-controller="Orders" asp-action="Details" asp-route-id="@item.OrderID">Details</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+
+
+
